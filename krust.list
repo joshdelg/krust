@@ -1,5 +1,5 @@
 
-blink.elf:     file format elf32-littlearm
+krust.elf:     file format elf32-littlearm
 
 
 Disassembly of section .text:
