@@ -10,10 +10,12 @@ BIN := ${ARM}-objcopy
 # Directory management
 SRC_DIR := ./src/
 RUST_DIR := ./target/arm-none-eabihf/debug/
+# RUST_DIR := ./target/thumbv6m-none-eabi/debug/
 
 # Flags, flags, flags
 AS_FLAGS := -c --warn --fatal-warnings -mcpu=arm1176jzf-s -march=armv6zk
-CC_FLAGS := -O -Wall -Wno-unused-variable -Werror -MMD -nostdlib -nostartfiles -ffreestanding  -march=armv6 -std=gnu99
+# CC_FLAGS := -O -Wall -Wno-unused-variable -Werror -MMD -nostdlib -nostartfiles -ffreestanding  -march=armv6 -std=gnu99
+CC_FLAGS := -ffreestanding -Og -nostdlib
 
 MEMMAP := ${SRC_DIR}memmap
 
@@ -25,14 +27,14 @@ krust.bin: krust.elf
 
 
 krust.elf: ${SRC_DIR}start.o ${RUST_DIR}libkrust.rlib
-	${CC} ${CC_FLAGS} -T ${MEMMAP} $^ -o $@
+	${CC} ${CC_FLAGS} -T ${MEMMAP} $^ -lgcc -o $@
 	${OBJ} -D $@ > krust.list
 
 ${SRC_DIR}start.o: ${SRC_DIR}start.S
 	${ASM} ${AS_FLAGS} $^ -o $@
 
-${RUST_DIR}libkrust.rlib: ${SRC_DIR}lib.rs
-	xargo build --target arm-none-eabihf
+${RUST_DIR}libkrust.rlib: ${SRC_DIR}lib.rs Cargo.toml
+	@RUST_TARGET_PATH=$(shell pwd) xargo build --target arm-none-eabihf
 
 clean:
 	rm -rf target

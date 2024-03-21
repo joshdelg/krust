@@ -40,3 +40,14 @@ GET32:
 .globl nop
 nop:
     bx lr
+
+.globl delay_loop
+@ delay_loop(u32 num_delay)
+delay_loop:
+    mov r1, #0
+    lp:
+    cmp r1, r0
+    addne r1, r1, #1
+    bne lp
+
+    bx lr
