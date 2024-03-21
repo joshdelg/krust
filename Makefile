@@ -11,6 +11,7 @@ BIN := ${ARM}-objcopy
 SRC_DIR := ./src/
 RUST_DIR := ./target/arm-none-eabihf/debug/
 # RUST_DIR := ./target/thumbv6m-none-eabi/debug/
+# /Users/joshdelg/.xargo/lib/rustlib/arm-none-eabihf/lib/libcore-49ba5c43d2924814.rlib /Users/joshdelg/.xargo/lib/rustlib/arm-none-eabihf/lib/libcompiler_builtins-ffa060d80b1e7f84.rlib
 
 # Flags, flags, flags
 AS_FLAGS := -c --warn --fatal-warnings -mcpu=arm1176jzf-s -march=armv6zk
@@ -33,7 +34,7 @@ krust.elf: ${SRC_DIR}start.o ${RUST_DIR}libkrust.rlib
 ${SRC_DIR}start.o: ${SRC_DIR}start.S
 	${ASM} ${AS_FLAGS} $^ -o $@
 
-${RUST_DIR}libkrust.rlib: ${SRC_DIR}lib.rs Cargo.toml
+${RUST_DIR}libkrust.rlib: $(wildcard ${SRC_DIR}*.rs) Cargo.toml
 	@RUST_TARGET_PATH=$(shell pwd) xargo build --target arm-none-eabihf
 
 clean:

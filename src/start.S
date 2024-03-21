@@ -41,13 +41,20 @@ GET32:
 nop:
     bx lr
 
-.globl delay_loop
-@ delay_loop(u32 num_delay)
-delay_loop:
-    mov r1, #0
-    lp:
-    cmp r1, r0
-    addne r1, r1, #1
-    bne lp
+@ cycle_init_asm()
+.globl cycle_init_asm
+cycle_init_asm:
+    mov r0, #1
+    mcr p15, 0, r0, c15, c12, 0
+    bx lr
 
+@ get_cycles_asm() -> u32
+.globl get_cycles_asm
+get_cycles_asm:
+    mrc p15, 0, r0, c15, c12, 1
+    bx lr
+
+.global dev_barrier_asm
+dev_barrier_asm:
+    mcr p15, 0, r0, c7, c10, 4
     bx lr
